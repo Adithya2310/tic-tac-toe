@@ -1,12 +1,17 @@
+using TicTacToe.Api.Application;
+using TicTacToe.Api.Domain;
+using TicTacToe.Api.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Controllers
-builder.Services.AddControllers();
+// ------------------------------------------------------------------
+// Services
+// ------------------------------------------------------------------
 
-// OpenAPI / Swagger
+builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
-// CORS — allow the React dev server (port 5173 by default for Vite)
+// CORS — allow the React dev server (Vite default: port 5173)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("ReactDevServer", policy =>
@@ -15,21 +20,33 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod());
 });
 
+// Domain
+builder.Services.AddSingleton<IRules, StandardRules>();
+builder.Services.AddSingleton<IComputerMoveStrategy, BasicComputerMoveStrategy>();
+builder.Services.AddSingleton<IGameFactory, GameFactory>();
+
+// Infrastructure — Singleton so in-memory state survives across requests.
+builder.Services.AddSingleton<IGameRepository, InMemoryGameRepository>();
+builder.Services.AddSingleton<IScoreboardRepository, InMemoryScoreboardRepository>();
+
+// Application services
+builder.Services.AddScoped<GameService>();
+builder.Services.AddScoped<ScoreboardService>();
+
+// ------------------------------------------------------------------
+// Pipeline
+// ------------------------------------------------------------------
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
-{
     app.MapOpenApi();
-}
 
 app.UseCors("ReactDevServer");
 
-// HTTP → HTTPS redirect is disabled in development for simplicity; enable as needed.
-// app.UseHttpsRedirection();
-
 app.MapControllers();
 
-// Simple health probe to verify the server is up.
+// Simple health probe.
 app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }))
    .WithName("HealthCheck");
 
