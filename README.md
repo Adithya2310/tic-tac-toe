@@ -176,10 +176,10 @@ Prompts were kept focused on one milestone at a time. Generated code that introd
 | Milestone | Description | Status |
 |-----------|-------------|--------|
 | 1 | Backend scaffold (solution, projects, CORS, health endpoint) | ✅ Complete |
-| 2 | Domain model (Game, Board, Rules, Strategy, Factory) | 🔄 In progress |
-| 3 | Repositories + Services | ⬜ Pending |
-| 4 | REST Controllers + DTOs | ⬜ Pending |
-| 5 | Backend tests | ⬜ Pending |
-| 6 | React frontend scaffold + API service | ⬜ Pending |
+| 2 | Domain model (Game, Board, Rules, Strategy, Factory) | ✅ Complete |
+| 3 | Repositories + Services | ✅ Complete |
+| 4 | REST Controllers + DTOs | ✅ Complete |
+| 5 | Backend tests (38 tests, all passing) | ✅ Complete |
+| 6 | React frontend scaffold + API service | 🔄 In progress |
 | 7 | React UI components | ⬜ Pending |
 | 8 | Polish + README finalization | ⬜ Pending |
