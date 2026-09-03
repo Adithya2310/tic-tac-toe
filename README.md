@@ -1,4 +1,4 @@
-# Tic Tac Toe — ABB Take-Home Assignment
+# Tic Tac Toe — Software Engineering Assignment
 
 A full-stack Tic Tac Toe application built with **React + TypeScript** (frontend) and **.NET 10 Web API** (backend), communicating via REST/JSON.
 

@@ -1,6 +1,6 @@
 # Requirements Traceability
 
-This document maps the ABB assignment requirements to the planned implementation.
+This document maps the assignment requirements to the planned implementation.
 
 ## 1. Product Requirements
 

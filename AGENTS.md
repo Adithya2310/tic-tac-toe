@@ -1,8 +1,8 @@
-# ABB Tic Tac Toe — AI Development Guidelines
+# Tic Tac Toe — AI Development Guidelines
 
 ## Purpose
 
-This repository contains a take-home Tic Tac Toe application for ABB.
+This repository contains a take-home Tic Tac Toe application for a software engineering assignment.
 
 The application consists of:
 
@@ -12,7 +12,7 @@ The application consists of:
 - In-memory persistence for the initial implementation
 - Automated backend tests for core game behavior
 
-The canonical product requirements are documented in the assignment supplied by ABB. Repository-specific architecture and implementation decisions are documented under `docs/`.
+The canonical product requirements are documented in the assignment. Repository-specific architecture and implementation decisions are documented under `docs/`.
 
 ## Source of Truth
 
@@ -183,7 +183,7 @@ AI tools may be used during development.
 
 Every generated change must be reviewed against:
 
-- the ABB requirements
+- the assignment requirements
 - the repository documentation
 - existing tests
 - architectural boundaries
