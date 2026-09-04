@@ -82,7 +82,20 @@ dotnet test
 
 ### Frontend
 
-> Coming in Milestone 6.
+```bash
+# From the repository root
+cd frontend
+npm install
+npm run dev
+```
+
+The React frontend starts at **http://localhost:5173**.
+It is configured to proxy `/api` requests to the backend at `http://localhost:5000`.
+
+To run frontend tests:
+```bash
+npm run test
+```
 
 ---
 
@@ -180,6 +193,6 @@ Prompts were kept focused on one milestone at a time. Generated code that introd
 | 3 | Repositories + Services | ✅ Complete |
 | 4 | REST Controllers + DTOs | ✅ Complete |
 | 5 | Backend tests (38 tests, all passing) | ✅ Complete |
-| 6 | React frontend scaffold + API service | 🔄 In progress |
-| 7 | React UI components | ⬜ Pending |
-| 8 | Polish + README finalization | ⬜ Pending |
+| 6 | React frontend scaffold + API service | ✅ Complete |
+| 7 | React UI components and Game Hook | ✅ Complete |
+| 8 | Polish, accessibility, tests, and README finalization | ✅ Complete |
