@@ -181,18 +181,3 @@ This project was built with AI assistance (Google Antigravity / Gemini). The AI 
 Every generated change was reviewed against the documented requirements, architecture decisions, and layer boundaries (see `AGENTS.md`) before being committed.
 
 Prompts were kept focused on one milestone at a time. Generated code that introduced behaviors not in the requirements was rejected or removed.
-
----
-
-## Implementation Progress
-
-| Milestone | Description | Status |
-|-----------|-------------|--------|
-| 1 | Backend scaffold (solution, projects, CORS, health endpoint) | ✅ Complete |
-| 2 | Domain model (Game, Board, Rules, Strategy, Factory) | ✅ Complete |
-| 3 | Repositories + Services | ✅ Complete |
-| 4 | REST Controllers + DTOs | ✅ Complete |
-| 5 | Backend tests (38 tests, all passing) | ✅ Complete |
-| 6 | React frontend scaffold + API service | ✅ Complete |
-| 7 | React UI components and Game Hook | ✅ Complete |
-| 8 | Polish, accessibility, tests, and README finalization | ✅ Complete |
