@@ -1,3 +1,4 @@
+using TicTacToe.Api.Api.Middleware;
 using TicTacToe.Api.Application;
 using TicTacToe.Api.Domain;
 using TicTacToe.Api.Infrastructure;
@@ -42,8 +43,19 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 
-app.UseCors("ReactDevServer");
+// ---- Custom middleware — ORDER IS INTENTIONAL ----
+//
+// 1. Correlation: runs first so every layer below has the ID.
+// 2. Logging: runs second so it can read the correlation ID AND see
+//    the real response status after ExceptionHandling sets it.
+// 3. ExceptionHandling: wraps the controller layer — catches domain
+//    exceptions so controllers don't need try/catch.
+//
+app.UseMiddleware<CorrelationMiddleware>();
+app.UseMiddleware<LoggingMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
+app.UseCors("ReactDevServer");
 app.MapControllers();
 
 // Simple health probe.
@@ -54,3 +66,4 @@ app.Run();
 
 // Expose Program for integration tests.
 public partial class Program { }
+

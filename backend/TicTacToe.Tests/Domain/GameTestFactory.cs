@@ -13,11 +13,13 @@ internal static class GameTestFactory
 
     public static Game CreateTwoPlayerGame() =>
         new(Guid.NewGuid(), GameType.TwoPlayer,
+            boardSize: 3,
             new Player(Symbol.X, false), new Player(Symbol.O, false),
             Rules, computerMoveStrategy: null);
 
     public static Game CreateComputerGame() =>
         new(Guid.NewGuid(), GameType.Computer,
+            boardSize: 3,
             new Player(Symbol.X, false), new Player(Symbol.O, true),
             Rules, Strategy);
 }
