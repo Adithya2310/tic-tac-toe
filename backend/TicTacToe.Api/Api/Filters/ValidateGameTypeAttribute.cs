@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using TicTacToe.Api.Api.DTOs;
+using TicTacToe.Api.Api;
 using TicTacToe.Api.Domain;
 
 namespace TicTacToe.Api.Api.Filters;
@@ -53,7 +54,7 @@ public sealed class ValidateGameTypeAttribute : ActionFilterAttribute
             // The actual controller action method NEVER executes when Result is set here.
             // This is the filter equivalent of the controller returning BadRequest().
             context.Result = new BadRequestObjectResult(new ErrorResponse(
-                "INVALID_GAME_TYPE",
+                ApiErrorCodes.InvalidGameType,
                 $"'{request.GameType}' is not a valid game type. Valid values: TwoPlayer, Computer."));
             return;
         }
@@ -63,4 +64,3 @@ public sealed class ValidateGameTypeAttribute : ActionFilterAttribute
         context.HttpContext.Items[ItemKey] = gameType;
     }
 }
-

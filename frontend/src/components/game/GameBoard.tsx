@@ -1,4 +1,5 @@
 import type { GameState, PlayerSymbol, Position } from '../../types/game'
+import { GameStatus, PlayerSymbol as PlayerSymbolValue } from '../../constants/game'
 
 interface BoardCellProps {
   row: number
@@ -35,11 +36,11 @@ export default function BoardCell({
   onClick,
 }: BoardCellProps) {
   const isEmpty = value === ''
-  const isX = value === 'X'
-  const isO = value === 'O'
+  const isX = value === PlayerSymbolValue.X
+  const isO = value === PlayerSymbolValue.O
 
   // Determine hover preview color based on current player
-  const hoverBorderColor = currentPlayer === 'X' ? 'hover:border-primary/50' : 'hover:border-success/50'
+  const hoverBorderColor = currentPlayer === PlayerSymbolValue.X ? 'hover:border-primary/50' : 'hover:border-success/50'
   const hoverBg = 'hover:bg-[#1F2636]'
 
   const cellClasses = [
@@ -109,7 +110,7 @@ export default function BoardCell({
           className={[
             'absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none',
             'transition-opacity duration-150',
-            currentPlayer === 'X' ? 'hover-show-x' : 'hover-show-o',
+            currentPlayer === PlayerSymbolValue.X ? 'hover-show-x' : 'hover-show-o',
           ].join(' ')}
         />
       )}
@@ -178,7 +179,7 @@ interface GameBoardProps {
 }
 
 export function GameBoard({ game, isSubmitting, isComputerThinking, onCellClick }: GameBoardProps) {
-  const isGameOver = game.status !== 'InProgress'
+  const isGameOver = game.status !== GameStatus.InProgress
   const boardInteractive = !isGameOver && !isSubmitting && !isComputerThinking
 
   // Build a Set for fast winning-cell lookups

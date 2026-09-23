@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import Button from '../components/ui/Button'
 import { createGame } from '../services/gameApi'
 import type { GameMode } from '../types/game'
+import { AppRoute, GameMode as GameModeValue } from '../constants/game'
 
 /**
  * HomePage — Game-mode selection screen.
@@ -20,7 +21,7 @@ import type { GameMode } from '../types/game'
  */
 export default function HomePage() {
   const navigate = useNavigate()
-  const [selectedMode, setSelectedMode] = useState<GameMode>('TwoPlayer')
+  const [selectedMode, setSelectedMode] = useState<GameMode>(GameModeValue.TwoPlayer)
   const [isStarting, setIsStarting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -29,7 +30,7 @@ export default function HomePage() {
     setError(null)
     try {
       const game = await createGame(selectedMode)
-      navigate(`/game/${game.gameId}`)
+      navigate(AppRoute.gameSession(game.gameId))
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to start game. Is the backend running?')
       setIsStarting(false)
@@ -89,16 +90,16 @@ export default function HomePage() {
               badge="LOCAL"
               description="Play against another player locally on the same device with authoritative move checks."
               icon={<Users size={22} />}
-              selected={selectedMode === 'TwoPlayer'}
-              onSelect={() => setSelectedMode('TwoPlayer')}
+              selected={selectedMode === GameModeValue.TwoPlayer}
+              onSelect={() => setSelectedMode(GameModeValue.TwoPlayer)}
             />
             <ModeCard
               id="mode-computer"
               label="VS COMPUTER"
               description="Challenge the computer"
               icon={<Monitor size={22} />}
-              selected={selectedMode === 'Computer'}
-              onSelect={() => setSelectedMode('Computer')}
+              selected={selectedMode === GameModeValue.Computer}
+              onSelect={() => setSelectedMode(GameModeValue.Computer)}
             />
           </div>
 
@@ -117,7 +118,7 @@ export default function HomePage() {
             className="w-full gap-2"
             isLoading={isStarting}
             onClick={handleStartGame}
-            aria-label={`Start ${selectedMode === 'TwoPlayer' ? 'Two Player' : 'Vs Computer'} game`}
+            aria-label={`Start ${selectedMode === GameModeValue.TwoPlayer ? 'Two Player' : 'Vs Computer'} game`}
           >
             {!isStarting && <span>START GAME</span>}
             {!isStarting && <span aria-hidden="true">→</span>}

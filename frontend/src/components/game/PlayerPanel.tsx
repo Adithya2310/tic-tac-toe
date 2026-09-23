@@ -1,4 +1,5 @@
 import type { GameState, PlayerSymbol } from '../../types/game'
+import { GameMode, GameStatus, PlayerSymbol as PlayerSymbolValue } from '../../constants/game'
 
 interface PlayerPanelProps {
   game: GameState
@@ -12,9 +13,9 @@ interface PlayerPanelProps {
  * the game mode and waiting/thinking state.
  */
 export default function PlayerPanel({ game }: PlayerPanelProps) {
-  const isComputerMode = game.gameType === 'Computer'
+  const isComputerMode = game.gameType === GameMode.Computer
   const currentPlayer = game.currentPlayer
-  const isGameOver = game.status !== 'InProgress'
+  const isGameOver = game.status !== GameStatus.InProgress
 
   return (
     <div className="flex flex-col gap-3">
@@ -28,21 +29,21 @@ export default function PlayerPanel({ game }: PlayerPanelProps) {
 
       {/* Player X card */}
       <PlayerCard
-        symbol="X"
+        symbol={PlayerSymbolValue.X}
         label={isComputerMode ? 'You' : 'Player 1'}
         subtitle={isComputerMode ? 'Human Player' : undefined}
-        isActive={!isGameOver && currentPlayer === 'X'}
-        isWinner={game.status === 'Won' && game.winner === 'X'}
+        isActive={!isGameOver && currentPlayer === PlayerSymbolValue.X}
+        isWinner={game.status === GameStatus.Won && game.winner === PlayerSymbolValue.X}
       />
 
       {/* Player O card */}
       <PlayerCard
-        symbol="O"
+        symbol={PlayerSymbolValue.O}
         label={isComputerMode ? 'Computer' : 'Player 2'}
         subtitle={isComputerMode ? 'AI Opponent' : undefined}
-        isActive={!isGameOver && currentPlayer === 'O'}
-        isWinner={game.status === 'Won' && game.winner === 'O'}
-        isThinking={isComputerMode && !isGameOver && currentPlayer === 'O'}
+        isActive={!isGameOver && currentPlayer === PlayerSymbolValue.O}
+        isWinner={game.status === GameStatus.Won && game.winner === PlayerSymbolValue.O}
+        isThinking={isComputerMode && !isGameOver && currentPlayer === PlayerSymbolValue.O}
       />
     </div>
   )
@@ -60,7 +61,7 @@ interface PlayerCardProps {
 }
 
 function PlayerCard({ symbol, label, subtitle, isActive, isWinner, isThinking }: PlayerCardProps) {
-  const isX = symbol === 'X'
+  const isX = symbol === PlayerSymbolValue.X
   const accentColor = isX ? 'border-t-primary' : 'border-t-success'
   const symbolBg = isX ? 'bg-primary' : 'bg-success/20'
   const symbolText = isX ? 'text-text-primary' : 'text-success'

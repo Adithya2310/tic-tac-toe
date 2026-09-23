@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import GamePage from './pages/GamePage'
 import HomePage from './pages/HomePage'
+import { AppRoute } from './constants/game'
 
 /**
  * App — top-level router.
@@ -15,8 +16,8 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/game/:gameId" element={<GamePage />} />
+        <Route path={AppRoute.home} element={<HomePage />} />
+        <Route path={AppRoute.game} element={<GamePage />} />
       </Routes>
     </BrowserRouter>
   )

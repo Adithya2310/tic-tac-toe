@@ -1,5 +1,6 @@
 import { History, RotateCcw } from 'lucide-react'
 import type { Move, ScoreboardState } from '../../types/game'
+import { PlayerSymbol } from '../../constants/game'
 
 // ------------------------------------------------------------------
 // MoveActivity — move history feed
@@ -58,7 +59,7 @@ interface MoveRowProps {
 }
 
 function MoveRow({ move, isLatest }: MoveRowProps) {
-  const isX = move.player === 'X'
+  const isX = move.player === PlayerSymbol.X
   const symbolBg = isX ? 'bg-primary/20 text-primary' : 'bg-success/20 text-success'
 
   return (

@@ -44,6 +44,15 @@ Common
 
 unless the responsibility is genuinely broad and clear.
 
+## 2.1 Protocol values and strings
+
+Use the type system for finite domain values: C# enums in the backend and
+TypeScript `as const` value objects with derived union types in the frontend.
+Put stable, repeated protocol strings such as API error codes and route segments
+in a narrowly named constants module. Do not extract one-off UI copy, log text,
+Tailwind classes, or exception messages merely because they are strings; keep
+those close to the code that owns their presentation or context.
+
 ## 3. Domain Rules
 
 Game rules should be expressible without HTTP concepts.

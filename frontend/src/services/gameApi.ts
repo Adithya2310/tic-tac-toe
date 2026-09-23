@@ -16,12 +16,11 @@ import type {
   PlayerSymbol,
   ScoreboardState,
 } from '../types/game';
+import { ApiErrorCode, ApiPath } from '../constants/game'
 
 // ------------------------------------------------------------------
 // Internal helpers
 // ------------------------------------------------------------------
-
-const BASE = '/api';
 
 /**
  * Wraps a fetch() call with consistent response handling.
@@ -33,7 +32,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let response: Response;
 
   try {
-    response = await fetch(`${BASE}${path}`, {
+    response = await fetch(`${ApiPath.root}${path}`, {
       headers: { 'Content-Type': 'application/json', ...init?.headers },
       ...init,
     });
@@ -63,7 +62,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
   if (response.status === 404) {
     const err = new Error('Game session not found.') as Error & { code: string };
-    err.code = 'GAME_NOT_FOUND';
+    err.code = ApiErrorCode.GameNotFound;
     throw err;
   }
 
@@ -76,7 +75,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 /** POST /api/games — Create a new game and return its initial state. */
 export async function createGame(gameType: CreateGameRequest['gameType']): Promise<GameState> {
-  return request<GameState>('/games', {
+  return request<GameState>(ApiPath.games, {
     method: 'POST',
     // boardSize: 3 is explicit today; the UI will expose this as a user option in a future iteration.
     body: JSON.stringify({ gameType, boardSize: 3 } satisfies CreateGameRequest),
@@ -85,7 +84,7 @@ export async function createGame(gameType: CreateGameRequest['gameType']): Promi
 
 /** GET /api/games/:id — Load the current authoritative state of a game. */
 export async function getGame(gameId: string): Promise<GameState> {
-  return request<GameState>(`/games/${gameId}`);
+  return request<GameState>(`${ApiPath.games}/${gameId}`);
 }
 
 /**
@@ -99,7 +98,7 @@ export async function makeMove(
   row: number,
   column: number,
 ): Promise<GameState> {
-  return request<GameState>(`/games/${gameId}/moves`, {
+  return request<GameState>(`${ApiPath.games}/${gameId}/moves`, {
     method: 'POST',
     body: JSON.stringify({ player, row, column } satisfies MakeMoveRequest),
   });
@@ -107,12 +106,12 @@ export async function makeMove(
 
 /** POST /api/games/:id/undo — Undo according to game mode. */
 export async function undo(gameId: string): Promise<GameState> {
-  return request<GameState>(`/games/${gameId}/undo`, { method: 'POST' });
+  return request<GameState>(`${ApiPath.games}/${gameId}/undo`, { method: 'POST' });
 }
 
 /** POST /api/games/:id/reset — Reset the board (scoreboard unchanged). */
 export async function resetGame(gameId: string): Promise<GameState> {
-  return request<GameState>(`/games/${gameId}/reset`, { method: 'POST' });
+  return request<GameState>(`${ApiPath.games}/${gameId}/reset`, { method: 'POST' });
 }
 
 // ------------------------------------------------------------------
@@ -121,10 +120,10 @@ export async function resetGame(gameId: string): Promise<GameState> {
 
 /** GET /api/scoreboard — Return the session-level scoreboard. */
 export async function getScoreboard(): Promise<ScoreboardState> {
-  return request<ScoreboardState>('/scoreboard');
+  return request<ScoreboardState>(ApiPath.scoreboard);
 }
 
 /** POST /api/scoreboard/reset — Zero out all scoreboard counts. */
 export async function resetScoreboard(): Promise<ScoreboardState> {
-  return request<ScoreboardState>('/scoreboard/reset', { method: 'POST' });
+  return request<ScoreboardState>(ApiPath.scoreboardReset, { method: 'POST' });
 }

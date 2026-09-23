@@ -1,4 +1,5 @@
 import type { GameState } from '../../types/game'
+import { GameStatus as GameStatusValue, PlayerSymbol } from '../../constants/game'
 
 interface GameStatusProps {
   game: GameState
@@ -21,10 +22,10 @@ export default function GameStatus({ game, isComputerThinking, moveCount }: Game
   let statusText: string
   let textColor: string
 
-  if (status === 'Won' && winner) {
+  if (status === GameStatusValue.Won && winner) {
     statusText = `${winner} Wins!`
-    textColor = winner === 'X' ? 'text-primary' : 'text-success'
-  } else if (status === 'Draw') {
+    textColor = winner === PlayerSymbol.X ? 'text-primary' : 'text-success'
+  } else if (status === GameStatusValue.Draw) {
     statusText = "It's a Draw"
     textColor = 'text-warning'
   } else if (isComputerThinking) {
@@ -39,16 +40,16 @@ export default function GameStatus({ game, isComputerThinking, moveCount }: Game
     <div className="flex items-center justify-between gap-4 rounded-2xl border border-border bg-surface px-5 py-3.5">
       {/* Left: avatar + status */}
       <div className="flex items-center gap-3">
-        {status === 'InProgress' && !isComputerThinking && (
-          <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${currentPlayer === 'X' ? 'bg-primary' : 'bg-success/20'}`}>
-            <span className={`font-display font-bold text-sm ${currentPlayer === 'X' ? 'text-text-primary' : 'text-success'}`}>
+        {status === GameStatusValue.InProgress && !isComputerThinking && (
+          <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${currentPlayer === PlayerSymbol.X ? 'bg-primary' : 'bg-success/20'}`}>
+            <span className={`font-display font-bold text-sm ${currentPlayer === PlayerSymbol.X ? 'text-text-primary' : 'text-success'}`}>
               {currentPlayer}
             </span>
           </div>
         )}
         <div>
           <p className={`font-display font-semibold text-sm ${textColor}`}>{statusText}</p>
-          {status === 'InProgress' && !isComputerThinking && (
+          {status === GameStatusValue.InProgress && !isComputerThinking && (
             <p className="text-xs text-text-muted">Select any available tile</p>
           )}
         </div>

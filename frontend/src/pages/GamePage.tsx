@@ -3,12 +3,13 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { GameBoard } from '../components/game/GameBoard'
 import GameControls from '../components/game/GameControls'
 import GameOverModal from '../components/game/GameOverModal'
-import GameStatus from '../components/game/GameStatus'
+import GameStatusPanel from '../components/game/GameStatus'
 import { MoveActivity, Scoreboard } from '../components/game/MoveActivity'
 import PlayerPanel from '../components/game/PlayerPanel'
 import Button from '../components/ui/Button'
 import Spinner from '../components/ui/Spinner'
 import { useGame } from '../hooks/useGame'
+import { AppRoute, GameMode, GameStatus } from '../constants/game'
 
 /**
  * GamePage — The active game session screen.
@@ -35,7 +36,7 @@ export default function GamePage() {
   const navigate = useNavigate()
 
   if (!gameId) {
-    navigate('/')
+    navigate(AppRoute.home)
     return null
   }
 
@@ -75,7 +76,7 @@ export default function GamePage() {
           <p className="font-display font-bold text-xl text-text-primary mb-2">Game session not found.</p>
           <p className="text-text-secondary text-sm">The game with ID <span className="font-mono-tabular text-text-muted">{gameId}</span> does not exist.</p>
         </div>
-        <Button id="not-found-go-home-btn" variant="primary" onClick={() => navigate('/')}>
+        <Button id="not-found-go-home-btn" variant="primary" onClick={() => navigate(AppRoute.home)}>
           Go Home
         </Button>
       </div>
@@ -94,7 +95,7 @@ export default function GamePage() {
           <Button id="error-retry-btn" variant="secondary" onClick={retryLoad}>
             Try Again
           </Button>
-          <Button id="error-go-home-btn" variant="primary" onClick={() => navigate('/')}>
+          <Button id="error-go-home-btn" variant="primary" onClick={() => navigate(AppRoute.home)}>
             Go Home
           </Button>
         </div>
@@ -103,7 +104,7 @@ export default function GamePage() {
   }
 
   const shortId = game.gameId.slice(0, 8).toUpperCase()
-  const isComputerMode = game.gameType === 'Computer'
+  const isComputerMode = game.gameType === GameMode.Computer
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -112,7 +113,7 @@ export default function GamePage() {
         {/* Left — brand */}
         <button
           id="header-home-btn"
-          onClick={() => navigate('/')}
+          onClick={() => navigate(AppRoute.home)}
           className="flex items-center gap-3 hover:opacity-80 transition-opacity focus-visible:ring-2 focus-visible:ring-primary rounded-lg outline-none"
           aria-label="Go to home page"
         >
@@ -137,9 +138,9 @@ export default function GamePage() {
 
         {/* Right — status indicator */}
         <div className="flex items-center gap-2">
-          <span className={`inline-block h-2 w-2 rounded-full ${game.status === 'InProgress' ? 'bg-success pulse-dot' : 'bg-text-muted'}`} aria-hidden="true" />
+          <span className={`inline-block h-2 w-2 rounded-full ${game.status === GameStatus.InProgress ? 'bg-success pulse-dot' : 'bg-text-muted'}`} aria-hidden="true" />
           <span className="font-mono-tabular text-xs text-text-muted hidden sm:inline">
-            {game.status === 'InProgress' ? 'Match Active' : 'Match Ended'}
+            {game.status === GameStatus.InProgress ? 'Match Active' : 'Match Ended'}
           </span>
         </div>
       </header>
@@ -168,7 +169,7 @@ export default function GamePage() {
             <PlayerPanel game={game} />
           </div>
 
-          <GameStatus
+          <GameStatusPanel
             game={game}
             isComputerThinking={isComputerThinking}
             moveCount={game.moves.length}

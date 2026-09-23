@@ -1,5 +1,6 @@
 using System.Text.Json;
 using TicTacToe.Api.Application.Exceptions;
+using TicTacToe.Api.Api;
 
 namespace TicTacToe.Api.Api.Middleware;
 
@@ -66,15 +67,15 @@ public sealed class ExceptionHandlingMiddleware
 
         catch (GameNotFoundException ex)
         {
-            await WriteErrorAsync(context, StatusCodes.Status404NotFound, "GAME_NOT_FOUND", ex.Message);
+            await WriteErrorAsync(context, StatusCodes.Status404NotFound, ApiErrorCodes.GameNotFound, ex.Message);
         }
         catch (InvalidMoveException ex)
         {
-            await WriteErrorAsync(context, StatusCodes.Status400BadRequest, "INVALID_MOVE", ex.Message);
+            await WriteErrorAsync(context, StatusCodes.Status400BadRequest, ApiErrorCodes.InvalidMove, ex.Message);
         }
         catch (InvalidUndoException ex)
         {
-            await WriteErrorAsync(context, StatusCodes.Status400BadRequest, "INVALID_UNDO", ex.Message);
+            await WriteErrorAsync(context, StatusCodes.Status400BadRequest, ApiErrorCodes.InvalidUndo, ex.Message);
         }
 
         // --- Unknown / unexpected exceptions ---
@@ -95,7 +96,7 @@ public sealed class ExceptionHandlingMiddleware
             await WriteErrorAsync(
                 context,
                 StatusCodes.Status500InternalServerError,
-                "INTERNAL_ERROR",
+                ApiErrorCodes.InternalError,
                 "An unexpected error occurred. Please try again later.");
         }
     }
@@ -119,4 +120,3 @@ public sealed class ExceptionHandlingMiddleware
         await context.Response.WriteAsync(body);
     }
 }
-

@@ -44,7 +44,7 @@ public sealed class GamesController : ControllerBase
         var gameType = (GameType)HttpContext.Items[ValidateGameTypeAttribute.ItemKey]!;
 
         if (request.BoardSize < 3)
-            return BadRequest(new ErrorResponse("INVALID_BOARD_SIZE",
+            return BadRequest(new ErrorResponse(ApiErrorCodes.InvalidBoardSize,
                 $"Board size must be at least 3. Received: {request.BoardSize}."));
 
         var game = _gameService.CreateGame(gameType, request.BoardSize);
@@ -74,7 +74,7 @@ public sealed class GamesController : ControllerBase
     public IActionResult MakeMove(Guid id, [FromBody] MakeMoveRequest request)
     {
         if (!Enum.TryParse<Symbol>(request.Player, ignoreCase: true, out var symbol) || symbol == Symbol.Empty)
-            return BadRequest(new ErrorResponse("INVALID_MOVE",
+            return BadRequest(new ErrorResponse(ApiErrorCodes.InvalidMove,
                 $"'{request.Player}' is not a valid player symbol. Valid values: X, O."));
 
         var game = _gameService.MakeMove(id, symbol, new Position(request.Row, request.Column));

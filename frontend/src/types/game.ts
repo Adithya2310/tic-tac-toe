@@ -12,17 +12,19 @@
 // Primitive domain types
 // ------------------------------------------------------------------
 
+import { GameMode, GameStatus, PlayerSymbol } from '../constants/game'
+
 /** The symbol a player uses. Empty string means the cell is unoccupied. */
-export type CellValue = 'X' | 'O' | '';
+export type CellValue = PlayerSymbol | '';
 
 /** The two player symbols. */
-export type PlayerSymbol = 'X' | 'O';
+export type PlayerSymbol = typeof PlayerSymbol[keyof typeof PlayerSymbol];
 
 /** Game mode as returned by the backend. */
-export type GameMode = 'TwoPlayer' | 'Computer';
+export type GameMode = typeof GameMode[keyof typeof GameMode];
 
 /** Authoritative game status. The frontend never computes this. */
-export type GameStatus = 'InProgress' | 'Won' | 'Draw';
+export type GameStatus = typeof GameStatus[keyof typeof GameStatus];
 
 // ------------------------------------------------------------------
 // API response shapes (mirror api-contract.md exactly)

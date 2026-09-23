@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react'
 import * as gameApi from '../services/gameApi'
 import type { GameState, PlayerSymbol, ScoreboardState } from '../types/game'
+import { ApiErrorCode, GameMode, GameStatus } from '../constants/game'
 
 // ------------------------------------------------------------------
 // State shape
@@ -110,7 +111,7 @@ export function useGame(gameId: string) {
     } catch (err) {
       if (!mounted.current) return
       const code = (err as { code?: string }).code
-      if (code === 'GAME_NOT_FOUND') {
+      if (code === ApiErrorCode.GameNotFound) {
         dispatch({ type: 'LOAD_NOT_FOUND' })
       } else {
         dispatch({ type: 'LOAD_ERROR', message: err instanceof Error ? err.message : 'Failed to load game.' })
@@ -124,7 +125,7 @@ export function useGame(gameId: string) {
 
   const makeMove = useCallback(async (player: PlayerSymbol, row: number, column: number) => {
     if (state.isSubmitting || !state.game) return
-    const isComputerMode = state.game.gameType === 'Computer'
+    const isComputerMode = state.game.gameType === GameMode.Computer
     dispatch({ type: 'SUBMIT_START', computerThinking: isComputerMode })
     try {
       const game = await gameApi.makeMove(gameId, player, row, column)
@@ -189,12 +190,12 @@ export function useGame(gameId: string) {
 
   // ---- Derived values (avoid redundant state) ----
 
-  const isGameOver = state.game != null && state.game.status !== 'InProgress'
+  const isGameOver = state.game != null && state.game.status !== GameStatus.InProgress
 
   /** Undo is available only while the game is in progress and there is at least one move. */
   const canUndo =
     state.game != null &&
-    state.game.status === 'InProgress' &&
+    state.game.status === GameStatus.InProgress &&
     state.game.moves.length > 0 &&
     !state.isSubmitting
 

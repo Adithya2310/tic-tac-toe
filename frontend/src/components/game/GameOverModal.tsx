@@ -2,6 +2,7 @@ import { Home, RotateCcw, Trophy } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { GameState } from '../../types/game'
+import { AppRoute, GameMode, GameStatus, PlayerSymbol } from '../../constants/game'
 import Button from '../ui/Button'
 
 interface GameOverModalProps {
@@ -34,24 +35,24 @@ export default function GameOverModal({ game, onReplay, isResetting }: GameOverM
     firstButtonRef.current?.focus()
   }, [])
 
-  const isWin = game.status === 'Won'
-  const isDraw = game.status === 'Draw'
+  const isWin = game.status === GameStatus.Won
+  const isDraw = game.status === GameStatus.Draw
   const winner = game.winner
 
   // Trophy icon style
   const trophyBg = isWin
-    ? winner === 'X'
+    ? winner === PlayerSymbol.X
       ? 'bg-primary/20 shadow-[0_0_32px_rgba(124,92,252,0.25)]'
       : 'bg-success/20 shadow-[0_0_32px_rgba(52,211,153,0.25)]'
     : 'bg-warning/20 shadow-[0_0_32px_rgba(251,191,36,0.25)]'
 
   const trophyColor = isWin
-    ? winner === 'X' ? 'text-primary' : 'text-success'
+    ? winner === PlayerSymbol.X ? 'text-primary' : 'text-success'
     : 'text-warning'
 
   const titleText = isWin ? `${winner} WINS!` : "IT'S A DRAW"
   const subtitleText = isWin
-    ? winner === 'X' ? 'Three in a row! Great game.' : 'Computer wins this round!'
+    ? winner === PlayerSymbol.X ? 'Three in a row! Great game.' : 'Computer wins this round!'
     : 'No winner this time. Play again?'
 
   const shortId = game.gameId.slice(0, 8).toUpperCase()
@@ -109,8 +110,8 @@ export default function GameOverModal({ game, onReplay, isResetting }: GameOverM
               {isWin && (
                 <div className="text-center">
                   <p className="font-mono-tabular text-xs text-text-muted mb-0.5">Winner</p>
-                  <p className={`font-mono-tabular font-semibold ${winner === 'X' ? 'text-primary' : 'text-success'}`}>
-                    {winner === 'X' ? 'Player 1 (X)' : game.gameType === 'Computer' ? 'Computer (O)' : 'Player 2 (O)'}
+                  <p className={`font-mono-tabular font-semibold ${winner === PlayerSymbol.X ? 'text-primary' : 'text-success'}`}>
+                    {winner === PlayerSymbol.X ? 'Player 1 (X)' : game.gameType === GameMode.Computer ? 'Computer (O)' : 'Player 2 (O)'}
                   </p>
                 </div>
               )}
@@ -131,7 +132,7 @@ export default function GameOverModal({ game, onReplay, isResetting }: GameOverM
               variant="secondary"
               size="lg"
               className="flex-1 gap-2"
-              onClick={() => navigate('/')}
+              onClick={() => navigate(AppRoute.home)}
             >
               <Home size={16} aria-hidden="true" />
               Go Home
