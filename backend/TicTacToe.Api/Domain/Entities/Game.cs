@@ -4,31 +4,54 @@ namespace TicTacToe.Api.Domain;
 /// Central domain aggregate.
 /// Owns the lifecycle of a single Tic Tac Toe game:
 ///   - Play(player, position): validate and apply a move, check completion.
-///   - Undo(): remove the last move(s) and rebuild state.
+///   - Undo(): revert the last move(s) in O(1) without rebuilding the board.
 ///   - Reset(): clear board and history, restart from scratch.
 ///
 /// The scoreboard is NOT owned by Game. Scoreboard updates are the service's responsibility.
+///
+/// Performance notes
+/// -----------------
+/// Move history is stored as a Stack&lt;Move&gt; because the only access patterns are
+/// push-on-play and pop-on-undo. Using Stack makes the intent explicit and removes
+/// the risk of accidental index-based access.
+///
+/// Undo no longer rebuilds the entire board from history.  Instead it:
+///   1. Pops the relevant move(s) from the stack.
+///   2. Calls Board.ClearCell() on each popped position — O(1) per move.
+///   3. Resets game-status fields to InProgress (undo is only available while InProgress
+///      per the assignment policy, so there is no prior-won state to restore).
+///   4. Recalculates CurrentPlayer from move count — O(1).
 /// </summary>
 public sealed class Game
 {
     private readonly IRules _rules;
     private readonly IComputerMoveStrategy? _computerMoveStrategy;
-    private readonly List<Move> _moveHistory = [];
+
+    // Stack gives Push/Pop/Peek semantics that directly express the undo contract.
+    // List.RemoveAt(Count-1) was functionally equivalent but masked the intent.
+    private readonly Stack<Move> _moveHistory = new();
 
     public Guid Id { get; }
     public GameType GameType { get; }
     public Board Board { get; }
+    public int BoardSize => Board.Size;
     public Player PlayerX { get; }
     public Player PlayerO { get; }
     public Player CurrentPlayer { get; private set; }
     public GameStatus Status { get; private set; }
     public Player? Winner { get; private set; }
     public IReadOnlyList<Position> WinningCells { get; private set; } = [];
-    public IReadOnlyList<Move> MoveHistory => _moveHistory;
+
+    /// <summary>
+    /// Exposes move history in chronological order (oldest first) for display purposes.
+    /// The Stack is reversed on access; callers should not assume O(1) enumeration.
+    /// </summary>
+    public IReadOnlyList<Move> MoveHistory => [.. _moveHistory.Reverse()];
 
     public Game(
         Guid id,
         GameType gameType,
+        int boardSize,
         Player playerX,
         Player playerO,
         IRules rules,
@@ -39,7 +62,7 @@ public sealed class Game
         PlayerX = playerX;
         PlayerO = playerO;
         CurrentPlayer = playerX; // X always goes first
-        Board = new Board();
+        Board = new Board(boardSize);
         Status = GameStatus.InProgress;
         _rules = rules;
         _computerMoveStrategy = computerMoveStrategy;
@@ -74,9 +97,10 @@ public sealed class Game
         Board.PlaceMark(position, player.Symbol);
 
         var move = new Move(_moveHistory.Count + 1, player, position);
-        _moveHistory.Add(move);
+        _moveHistory.Push(move);
 
-        var winningCells = _rules.CheckWin(Board, player.Symbol);
+        // O(n): checks only the 4 lines through the cell that was just placed.
+        var winningCells = _rules.CheckWin(Board, player.Symbol, position);
         if (winningCells.Count > 0)
         {
             Status = GameStatus.Won;
@@ -99,11 +123,11 @@ public sealed class Game
     ///
     /// Only permitted while the game is InProgress.
     ///
-    /// TwoPlayer: remove 1 move.
-    /// Computer:  remove the latest O (computer) move and the preceding X (human) move.
+    /// TwoPlayer: pop 1 move, clear its cell — O(1).
+    /// Computer:  pop O's move and X's preceding move, clear both cells — O(1).
     ///
-    /// The board is rebuilt from the remaining move history to avoid maintaining
-    /// a separate mutable undo stack.
+    /// Board state is updated incrementally via ClearCell; the board is NOT rebuilt
+    /// from scratch, avoiding the O(n²) replay overhead.
     /// </summary>
     public void Undo()
     {
@@ -115,32 +139,28 @@ public sealed class Game
 
         if (GameType == GameType.Computer)
         {
-            // In computer mode, the last move in history is always O's (computer) because
-            // the service applies the computer move immediately after the human move.
-            // If there is only one move in history (X moved, computer has not responded yet),
-            // that is an unexpected state — we still allow removal of just that move.
-            var lastMove = _moveHistory[^1];
+            var lastMove = _moveHistory.Peek();
 
             if (lastMove.Player.Symbol == Symbol.O && _moveHistory.Count >= 2)
             {
-                // Normal case: remove O's move and the preceding X move.
-                _moveHistory.RemoveAt(_moveHistory.Count - 1);
-                _moveHistory.RemoveAt(_moveHistory.Count - 1);
+                // Normal case: pop O's move, then X's move; clear both cells.
+                UndoSingleMove();
+                UndoSingleMove();
             }
             else
             {
-                // Edge case: only one move exists (human moved, computer has not yet).
-                _moveHistory.RemoveAt(_moveHistory.Count - 1);
+                // Edge case: only one move exists (human moved, computer has not yet responded).
+                UndoSingleMove();
             }
         }
         else
         {
-            // Two-player: remove one move.
-            _moveHistory.RemoveAt(_moveHistory.Count - 1);
+            // Two-player: pop one move.
+            UndoSingleMove();
         }
 
-        RebuildBoardFromMoves();
-        RecalculateState();
+        // Restore turn — X always starts, so parity of remaining move count determines whose turn it is.
+        CurrentPlayer = _moveHistory.Count % 2 == 0 ? PlayerX : PlayerO;
     }
 
     /// <summary>
@@ -170,46 +190,12 @@ public sealed class Game
         CurrentPlayer = CurrentPlayer.Symbol == Symbol.X ? PlayerO : PlayerX;
 
     /// <summary>
-    /// Clears the board and replays the remaining move history.
-    /// Called after removing move(s) during Undo.
+    /// Pops the top move from the stack and clears its cell on the board.
+    /// This is O(1) — no board replay required.
     /// </summary>
-    private void RebuildBoardFromMoves()
+    private void UndoSingleMove()
     {
-        Board.Clear();
-        foreach (var move in _moveHistory)
-            Board.PlaceMark(move.Position, move.Player.Symbol);
-    }
-
-    /// <summary>
-    /// Recalculates Status, Winner, WinningCells, and CurrentPlayer
-    /// based on the current board state after rebuilding from history.
-    /// </summary>
-    private void RecalculateState()
-    {
-        // Reset to a clean state before recalculating.
-        Status = GameStatus.InProgress;
-        Winner = null;
-        WinningCells = [];
-
-        // Determine whose turn it should be after the remaining moves.
-        // X always starts; turns alternate.
-        CurrentPlayer = _moveHistory.Count % 2 == 0 ? PlayerX : PlayerO;
-
-        // Check whether the last move (if any) resulted in a win.
-        if (_moveHistory.Count > 0)
-        {
-            var lastPlayer = _moveHistory[^1].Player;
-            var winningCells = _rules.CheckWin(Board, lastPlayer.Symbol);
-            if (winningCells.Count > 0)
-            {
-                Status = GameStatus.Won;
-                Winner = lastPlayer;
-                WinningCells = winningCells;
-                return;
-            }
-        }
-
-        if (_rules.CheckDraw(Board))
-            Status = GameStatus.Draw;
+        var move = _moveHistory.Pop();
+        Board.ClearCell(move.Position);
     }
 }

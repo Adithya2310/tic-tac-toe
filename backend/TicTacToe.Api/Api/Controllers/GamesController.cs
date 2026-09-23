@@ -27,7 +27,11 @@ public sealed class GamesController : ControllerBase
             return BadRequest(new ErrorResponse("INVALID_GAME_TYPE",
                 $"'{request.GameType}' is not a valid game type. Valid values: TwoPlayer, Computer."));
 
-        var game = _gameService.CreateGame(gameType);
+        if (request.BoardSize < 3)
+            return BadRequest(new ErrorResponse("INVALID_BOARD_SIZE",
+                $"Board size must be at least 3. Received: {request.BoardSize}."));
+
+        var game = _gameService.CreateGame(gameType, request.BoardSize);
         var response = GameMapper.ToResponse(game);
         return CreatedAtAction(nameof(GetGame), new { id = game.Id }, response);
     }

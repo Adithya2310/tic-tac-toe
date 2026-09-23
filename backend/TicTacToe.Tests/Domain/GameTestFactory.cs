@@ -9,7 +9,7 @@ namespace TicTacToe.Tests.Domain;
 internal static class GameTestFactory
 {
     private static readonly IRules Rules = new StandardRules();
-    private static readonly IComputerMoveStrategy Strategy = new BasicComputerMoveStrategy();
+    private static readonly IComputerMoveStrategy Strategy = new ComputerMoveStrategy();
 
     public static Game CreateTwoPlayerGame() =>
         new(Guid.NewGuid(), GameType.TwoPlayer,

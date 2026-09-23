@@ -13,7 +13,7 @@ namespace TicTacToe.Api.Domain;
 /// The strategy is stateless and deterministic.
 /// It clones the board before evaluation so the real game board is never mutated.
 /// </summary>
-public sealed class BasicComputerMoveStrategy : IComputerMoveStrategy
+public sealed class ComputerMoveStrategy : IComputerMoveStrategy
 {
     private static readonly IRules Rules = new StandardRules();
 
@@ -55,7 +55,8 @@ public sealed class BasicComputerMoveStrategy : IComputerMoveStrategy
         {
             var probe = board.Clone();
             probe.PlaceMark(empty, symbol);
-            if (Rules.CheckWin(probe, symbol).Count > 0)
+            // Pass `empty` as lastPosition — it is the cell we just placed on the probe board.
+            if (Rules.CheckWin(probe, symbol, empty).Count > 0)
                 return empty;
         }
         return null;

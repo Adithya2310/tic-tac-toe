@@ -16,6 +16,7 @@ internal static class GameMapper
         return new GameResponse
         {
             GameId = game.Id,
+            BoardSize = game.BoardSize,
             Board = grid.Select(row =>
                 row.Select(cell => cell == Symbol.Empty ? "" : cell.ToString()).ToList()
             ).ToList(),

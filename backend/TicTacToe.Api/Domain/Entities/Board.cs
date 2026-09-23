@@ -1,25 +1,37 @@
 namespace TicTacToe.Api.Domain;
 
 /// <summary>
-/// Manages the 3x3 board state.
+/// Manages an n×n board state.
 /// Board owns cell-level constraints; it does not own turn logic or win detection.
 /// </summary>
 public sealed class Board
 {
-    private const int Size = 3;
     private readonly Symbol[,] _cells;
 
-    public Board()
+    /// <summary>The side length of the board (n for an n×n grid). Minimum 3.</summary>
+    public int Size { get; }
+
+    /// <summary>
+    /// Creates a blank n×n board.
+    /// </summary>
+    /// <param name="size">The side length. Must be at least 3.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when size is less than 3.</exception>
+    public Board(int size)
     {
+        if (size < 3)
+            throw new ArgumentOutOfRangeException(nameof(size), size, "Board size must be at least 3.");
+        Size = size;
         _cells = new Symbol[Size, Size];
     }
 
     private Board(Symbol[,] cells)
     {
         _cells = cells;
+        Size = cells.GetLength(0);
     }
 
-    /// <summary>Returns true when the position is within the 3x3 grid.</summary>
+
+    /// <summary>Returns true when the position is within the n×n grid.</summary>
     public bool IsValidPosition(Position position) =>
         position.Row >= 0 && position.Row < Size &&
         position.Column >= 0 && position.Column < Size;
@@ -51,6 +63,12 @@ public sealed class Board
 
     /// <summary>Returns true when every cell has a mark placed on it.</summary>
     public bool IsFull() => GetEmptyPositions().Count == 0;
+
+    /// <summary>Resets a single cell to Empty. Used by Game.Undo() to reverse one move without rebuilding the board.</summary>
+    public void ClearCell(Position position)
+    {
+        _cells[position.Row, position.Column] = Symbol.Empty;
+    }
 
     /// <summary>Resets every cell to Empty.</summary>
     public void Clear()

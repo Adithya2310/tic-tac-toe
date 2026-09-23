@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
 
 // Domain
 builder.Services.AddSingleton<IRules, StandardRules>();
-builder.Services.AddSingleton<IComputerMoveStrategy, BasicComputerMoveStrategy>();
+builder.Services.AddSingleton<IComputerMoveStrategy, ComputerMoveStrategy>();
 builder.Services.AddSingleton<IGameFactory, GameFactory>();
 
 // Infrastructure — Singleton so in-memory state survives across requests.

@@ -6,5 +6,5 @@ namespace TicTacToe.Api.Domain;
 /// </summary>
 public interface IGameFactory
 {
-    Game Create(GameType gameType);
+    Game Create(GameType gameType, int boardSize);
 }
