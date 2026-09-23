@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TicTacToe.Api.Api.DTOs;
+using TicTacToe.Api.Api.Filters;
 using TicTacToe.Api.Application;
 using TicTacToe.Api.Domain;
 
@@ -28,14 +29,19 @@ public sealed class GamesController : ControllerBase
     }
 
     // POST /api/games
+    // [ValidateGameType] runs BEFORE this method body.
+    // If the GameType string is invalid, the filter short-circuits with a 400
+    // and this method never executes.
+    // If it is valid, the parsed enum is waiting in HttpContext.Items.
     [HttpPost]
+    [ValidateGameType]
     [ProducesResponseType<GameResponse>(StatusCodes.Status201Created)]
     [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
     public IActionResult CreateGame([FromBody] CreateGameRequest request)
     {
-        if (!Enum.TryParse<GameType>(request.GameType, ignoreCase: true, out var gameType))
-            return BadRequest(new ErrorResponse("INVALID_GAME_TYPE",
-                $"'{request.GameType}' is not a valid game type. Valid values: TwoPlayer, Computer."));
+        // The filter already validated and parsed GameType — read it directly.
+        // The cast is safe because [ValidateGameType] guarantees the key exists here.
+        var gameType = (GameType)HttpContext.Items[ValidateGameTypeAttribute.ItemKey]!;
 
         if (request.BoardSize < 3)
             return BadRequest(new ErrorResponse("INVALID_BOARD_SIZE",
@@ -45,6 +51,7 @@ public sealed class GamesController : ControllerBase
         var response = GameMapper.ToResponse(game);
         return CreatedAtAction(nameof(GetGame), new { id = game.Id }, response);
     }
+
 
     // GET /api/games/{id}
     // GameNotFoundException → 404 is handled by ExceptionHandlingMiddleware.

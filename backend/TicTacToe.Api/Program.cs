@@ -28,6 +28,7 @@ builder.Host.UseSerilog();
 // ------------------------------------------------------------------
 
 builder.Services.AddControllers();
+
 builder.Services.AddOpenApi();
 
 // CORS — allow the React dev server (Vite default: port 5173)
