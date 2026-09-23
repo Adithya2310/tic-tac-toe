@@ -51,9 +51,7 @@ export interface Move {
  */
 export interface GameState {
   gameId: string;
-  /** Side length of the board (n for an n×n grid). */
-  boardSize: number;
-  /** n×n board: board[row][col] is 'X', 'O', or ''. */
+  /** 3×3 board: board[row][col] is 'X', 'O', or ''. */
   board: CellValue[][];
   currentPlayer: PlayerSymbol;
   gameType: GameMode;
@@ -76,8 +74,6 @@ export interface ScoreboardState {
 
 export interface CreateGameRequest {
   gameType: GameMode;
-  /** Side length of the board. Defaults to 3 on the backend when omitted. */
-  boardSize?: number;
 }
 
 export interface MakeMoveRequest {

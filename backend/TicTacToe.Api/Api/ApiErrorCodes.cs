@@ -8,7 +8,6 @@ namespace TicTacToe.Api.Api;
 public static class ApiErrorCodes
 {
     public const string GameNotFound = "GAME_NOT_FOUND";
-    public const string InvalidBoardSize = "INVALID_BOARD_SIZE";
     public const string InvalidGameType = "INVALID_GAME_TYPE";
     public const string InvalidMove = "INVALID_MOVE";
     public const string InvalidUndo = "INVALID_UNDO";

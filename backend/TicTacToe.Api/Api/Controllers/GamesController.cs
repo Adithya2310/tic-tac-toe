@@ -43,11 +43,7 @@ public sealed class GamesController : ControllerBase
         // The cast is safe because [ValidateGameType] guarantees the key exists here.
         var gameType = (GameType)HttpContext.Items[ValidateGameTypeAttribute.ItemKey]!;
 
-        if (request.BoardSize < 3)
-            return BadRequest(new ErrorResponse(ApiErrorCodes.InvalidBoardSize,
-                $"Board size must be at least 3. Received: {request.BoardSize}."));
-
-        var game = _gameService.CreateGame(gameType, request.BoardSize);
+        var game = _gameService.CreateGame(gameType);
         var response = GameMapper.ToResponse(game);
         return CreatedAtAction(nameof(GetGame), new { id = game.Id }, response);
     }

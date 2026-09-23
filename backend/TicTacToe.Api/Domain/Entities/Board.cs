@@ -1,37 +1,31 @@
 namespace TicTacToe.Api.Domain;
 
 /// <summary>
-/// Manages an n×n board state.
+/// Manages the fixed 3×3 board state.
 /// Board owns cell-level constraints; it does not own turn logic or win detection.
 /// </summary>
 public sealed class Board
 {
     private readonly Symbol[,] _cells;
 
-    /// <summary>The side length of the board (n for an n×n grid). Minimum 3.</summary>
-    public int Size { get; }
+    /// <summary>The fixed side length of every Tic Tac Toe board.</summary>
+    public const int Size = 3;
 
     /// <summary>
-    /// Creates a blank n×n board.
+    /// Creates a blank 3×3 board.
     /// </summary>
-    /// <param name="size">The side length. Must be at least 3.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when size is less than 3.</exception>
-    public Board(int size)
+    public Board()
     {
-        if (size < 3)
-            throw new ArgumentOutOfRangeException(nameof(size), size, "Board size must be at least 3.");
-        Size = size;
         _cells = new Symbol[Size, Size];
     }
 
     private Board(Symbol[,] cells)
     {
         _cells = cells;
-        Size = cells.GetLength(0);
     }
 
 
-    /// <summary>Returns true when the position is within the n×n grid.</summary>
+    /// <summary>Returns true when the position is within the 3×3 grid.</summary>
     public bool IsValidPosition(Position position) =>
         position.Row >= 0 && position.Row < Size &&
         position.Column >= 0 && position.Column < Size;

@@ -6,7 +6,7 @@ This document maps the assignment requirements to the planned implementation.
 
 | Requirement | Backend | Frontend / Test |
 |---|---|---|
-| 3 x 3 board | `Board` | Board component |
+| Fixed 3 x 3 board | `Board` | Board component |
 | Empty cells clickable | API validates cell; UI enables empty cells | Board component |
 | X/O displayed | `Board` / `GameResponse` | Board component |
 | Locked occupied cells | `Board` + `StandardRules` | Board component |

@@ -8,10 +8,7 @@ public sealed class GameResponse
 {
     public Guid GameId { get; set; }
 
-    /// <summary>Side length of the board (n for an n×n grid).</summary>
-    public int BoardSize { get; set; }
-
-    /// <summary>n×n board: board[row][col] is "X", "O", or "".</summary>
+    /// <summary>3×3 board: board[row][col] is "X", "O", or "".</summary>
     public List<List<string>> Board { get; set; } = [];
 
     /// <summary>"X" or "O".</summary>

@@ -26,6 +26,8 @@ The assignment permits endpoint names to vary; these names are the repository's 
 
 ### Request
 
+Every game uses the fixed 3×3 board. The request accepts the selected game mode only.
+
 ```json
 {
   "gameType": "TwoPlayer"

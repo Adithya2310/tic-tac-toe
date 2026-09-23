@@ -1,7 +1,7 @@
 namespace TicTacToe.Api.Domain;
 
 /// <summary>
-/// Standard n×n Tic Tac Toe rules.
+/// Standard fixed-size 3×3 Tic Tac Toe rules.
 ///
 /// Win detection is O(n) per move: instead of scanning the whole board, only the
 /// 4 lines that pass through the last-played cell are checked — the row, the column,
@@ -9,7 +9,7 @@ namespace TicTacToe.Api.Domain;
 /// A win is only possible through the cell that was just placed, so nothing else
 /// needs to be checked.
 ///
-/// Draw detection is O(n²) in the worst case (IsFull scans all cells) but only
+/// Draw detection is constant-time for this fixed board in practice (IsFull scans nine cells) and only
 /// runs after a non-winning move, so it is acceptable.
 /// </summary>
 public sealed class StandardRules : IRules
@@ -23,7 +23,7 @@ public sealed class StandardRules : IRules
     /// </summary>
     public IReadOnlyList<Position> CheckWin(Board board, Symbol symbol, Position lastPosition)
     {
-        int n   = board.Size;
+        int n   = Board.Size;
         int row = lastPosition.Row;
         int col = lastPosition.Column;
 

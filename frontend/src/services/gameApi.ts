@@ -77,8 +77,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export async function createGame(gameType: CreateGameRequest['gameType']): Promise<GameState> {
   return request<GameState>(ApiPath.games, {
     method: 'POST',
-    // boardSize: 3 is explicit today; the UI will expose this as a user option in a future iteration.
-    body: JSON.stringify({ gameType, boardSize: 3 } satisfies CreateGameRequest),
+    body: JSON.stringify({ gameType } satisfies CreateGameRequest),
   });
 }
 

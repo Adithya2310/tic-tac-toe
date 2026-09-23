@@ -108,7 +108,7 @@ The player object does not decide a move.
 State:
 
 ```text
-3 x 3 grid of Symbol
+Fixed 3 x 3 grid of Symbol
 ```
 
 Core functions:

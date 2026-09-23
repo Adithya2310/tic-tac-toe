@@ -17,14 +17,13 @@ public sealed class GameFactory : IGameFactory
         _computerMoveStrategy = computerMoveStrategy;
     }
 
-    public Game Create(GameType gameType, int boardSize)
+    public Game Create(GameType gameType)
     {
         return gameType switch
         {
             GameType.TwoPlayer => new Game(
                 id: Guid.NewGuid(),
                 gameType: GameType.TwoPlayer,
-                boardSize: boardSize,
                 playerX: new Player(Symbol.X, isComputer: false),
                 playerO: new Player(Symbol.O, isComputer: false),
                 rules: _rules,
@@ -33,7 +32,6 @@ public sealed class GameFactory : IGameFactory
             GameType.Computer => new Game(
                 id: Guid.NewGuid(),
                 gameType: GameType.Computer,
-                boardSize: boardSize,
                 playerX: new Player(Symbol.X, isComputer: false),
                 playerO: new Player(Symbol.O, isComputer: true),
                 rules: _rules,

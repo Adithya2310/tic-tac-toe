@@ -34,7 +34,6 @@ public sealed class Game
     public Guid Id { get; }
     public GameType GameType { get; }
     public Board Board { get; }
-    public int BoardSize => Board.Size;
     public Player PlayerX { get; }
     public Player PlayerO { get; }
     public Player CurrentPlayer { get; private set; }
@@ -51,7 +50,6 @@ public sealed class Game
     public Game(
         Guid id,
         GameType gameType,
-        int boardSize,
         Player playerX,
         Player playerO,
         IRules rules,
@@ -62,7 +60,7 @@ public sealed class Game
         PlayerX = playerX;
         PlayerO = playerO;
         CurrentPlayer = playerX; // X always goes first
-        Board = new Board(boardSize);
+        Board = new Board();
         Status = GameStatus.InProgress;
         _rules = rules;
         _computerMoveStrategy = computerMoveStrategy;

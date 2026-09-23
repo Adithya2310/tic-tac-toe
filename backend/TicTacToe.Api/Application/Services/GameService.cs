@@ -32,10 +32,10 @@ public sealed class GameService
         _computerMoveStrategy = computerMoveStrategy;
     }
 
-    /// <summary>Creates and persists a new game of the given type and board size.</summary>
-    public Game CreateGame(GameType gameType, int boardSize)
+    /// <summary>Creates and persists a 3×3 game of the given type.</summary>
+    public Game CreateGame(GameType gameType)
     {
-        var game = _gameFactory.Create(gameType, boardSize);
+        var game = _gameFactory.Create(gameType);
         _gameRepository.Add(game);
         return game;
     }

@@ -10,7 +10,7 @@ public sealed class ComputerMoveSelectionTests
     /// <summary>Helper: applies moves in X/O alternating order to a fresh board.</summary>
     private static Board BuildBoard(params (int row, int col, Symbol symbol)[] marks)
     {
-        var board = new Board(3);
+        var board = new Board();
         foreach (var (row, col, symbol) in marks)
             board.PlaceMark(new Position(row, col), symbol);
         return board;
@@ -107,7 +107,7 @@ public sealed class ComputerMoveSelectionTests
             (0, 0, Symbol.X));                     // intentional overlap disabled: use real scenario below
 
         // Simpler scenario: O can win on column 2, X can win on row 0.
-        var board2 = new Board(3);
+        var board2 = new Board();
         board2.PlaceMark(new Position(0, 2), Symbol.O);
         board2.PlaceMark(new Position(1, 2), Symbol.O);
         board2.PlaceMark(new Position(0, 0), Symbol.X);
