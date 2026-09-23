@@ -60,7 +60,13 @@ builder.Services.AddScoped<ScoreboardService>();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
+{
     app.MapOpenApi();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/openapi/v1.json", "Tic Tac Toe API v1");
+    });
+}
 
 // ---- Custom middleware — ORDER IS INTENTIONAL ----
 //
@@ -85,4 +91,3 @@ app.Run();
 
 // Expose Program for integration tests.
 public partial class Program { }
-

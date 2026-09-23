@@ -65,7 +65,10 @@ dotnet run --project backend/TicTacToe.Api
 
 The API server starts at **http://localhost:5000**.
 
-Swagger UI (development only): **http://localhost:5000/openapi/v1.json**
+Swagger UI (development only): **http://localhost:5000/swagger**
+
+The generated OpenAPI document is also available at
+**http://localhost:5000/openapi/v1.json**.
 
 ### Health Check
 
