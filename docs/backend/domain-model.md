@@ -347,7 +347,6 @@ Creates a game with:
 - X human
 - O human
 - `StandardRules`
-- no computer strategy
 
 ### Computer
 
@@ -356,7 +355,9 @@ Creates a game with:
 - X human
 - O computer
 - `StandardRules`
-- `BasicComputerMoveStrategy`
+
+`GameFactory` configures the players and game rules. `GameService` invokes
+`IComputerMoveStrategy` after a valid human move in Computer mode.
 
 The factory should not persist the new game.
 

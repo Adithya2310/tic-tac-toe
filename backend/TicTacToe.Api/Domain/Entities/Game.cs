@@ -25,7 +25,6 @@ namespace TicTacToe.Api.Domain;
 public sealed class Game
 {
     private readonly IRules _rules;
-    private readonly IComputerMoveStrategy? _computerMoveStrategy;
 
     // Stack gives Push/Pop/Peek semantics that directly express the undo contract.
     // List.RemoveAt(Count-1) was functionally equivalent but masked the intent.
@@ -52,8 +51,7 @@ public sealed class Game
         GameType gameType,
         Player playerX,
         Player playerO,
-        IRules rules,
-        IComputerMoveStrategy? computerMoveStrategy)
+        IRules rules)
     {
         Id = id;
         GameType = gameType;
@@ -63,7 +61,6 @@ public sealed class Game
         Board = new Board();
         Status = GameStatus.InProgress;
         _rules = rules;
-        _computerMoveStrategy = computerMoveStrategy;
     }
 
     // ------------------------------------------------------------------

@@ -240,8 +240,10 @@ GameFactory
     +--> TwoPlayer Game
     |
     +--> Computer Game
-              |
-              +--> BasicComputerMoveStrategy
+
+GameService
+    |
+    +--> BasicComputerMoveStrategy (Computer mode only)
 ```
 
 ## 7. Why Repository Is Used
