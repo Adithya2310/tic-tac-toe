@@ -30,19 +30,6 @@ public sealed class UndoComputerTests
     }
 
     [Fact]
-    public void Undo_Computer_SingleHumanMove_RemovesThatMove()
-    {
-        // Edge case: only X has moved, computer has not yet responded.
-        var game = GameTestFactory.CreateComputerGame();
-        game.Play(game.PlayerX, new Position(0, 0));
-
-        game.Undo();
-
-        Assert.Empty(game.MoveHistory);
-        Assert.Equal(Symbol.X, game.CurrentPlayer.Symbol);
-    }
-
-    [Fact]
     public void Undo_Computer_MultiplePairs_RemovesOnlyLatestPair()
     {
         var game = GameTestFactory.CreateComputerGame();

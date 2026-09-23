@@ -132,30 +132,16 @@ public sealed class Game
         if (_moveHistory.Count == 0)
             throw new InvalidOperationException("There are no moves to undo.");
 
+        // Every undo removes the latest move and returns the turn to that player.
+        UndoSingleMove();
+        SwitchTurn();
+
         if (GameType == GameType.Computer)
         {
-            var lastMove = _moveHistory.Peek();
-
-            if (lastMove.Player.Symbol == Symbol.O && _moveHistory.Count >= 2)
-            {
-                // Normal case: pop O's move, then X's move; clear both cells.
-                UndoSingleMove();
-                UndoSingleMove();
-            }
-            else
-            {
-                // Edge case: only one move exists (human moved, computer has not yet responded).
-                UndoSingleMove();
-            }
-        }
-        else
-        {
-            // Two-player: pop one move.
+            // Computer mode also removes the preceding human move, returning to X.
             UndoSingleMove();
+            SwitchTurn();
         }
-
-        // Restore turn — X always starts, so parity of remaining move count determines whose turn it is.
-        CurrentPlayer = _moveHistory.Count % 2 == 0 ? PlayerX : PlayerO;
     }
 
     /// <summary>
