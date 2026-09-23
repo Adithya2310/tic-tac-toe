@@ -1,9 +1,27 @@
+using Serilog;
 using TicTacToe.Api.Api.Middleware;
 using TicTacToe.Api.Application;
 using TicTacToe.Api.Domain;
 using TicTacToe.Api.Infrastructure;
 
+// ------------------------------------------------------------------
+// Configure Serilog
+// ------------------------------------------------------------------
+// Set up Serilog to write to the Console and to a daily rolling file.
+// We use AppContext.BaseDirectory to ensure it writes relative to the execution folder
+// (e.g., bin/Debug/net10.0/logs/log.txt) rather than the project root.
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File(
+        path: Path.Combine(AppContext.BaseDirectory, "logs", "log-.txt"),
+        rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Tell ASP.NET Core to use Serilog for all its internal and custom logging.
+builder.Host.UseSerilog();
+
 
 // ------------------------------------------------------------------
 // Services
